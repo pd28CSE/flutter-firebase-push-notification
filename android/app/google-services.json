@@ -1,0 +1,83 @@
+{
+  "project_info": {
+    "project_number": "755481004031",
+    "firebase_url": "https://my-first-flutter-crud-app-default-rtdb.firebaseio.com",
+    "project_id": "my-first-flutter-crud-app",
+    "storage_bucket": "my-first-flutter-crud-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755481004031:android:a53c7dd7bd1f7c6d0549ca",
+        "android_client_info": {
+          "package_name": "com.example.crudapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755481004031-rq576hkjk8akmthe8tttmjqlh48h5qsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtRYAYY9eBCIN7V8nDiLTg44fSLhG0Gzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755481004031-rq576hkjk8akmthe8tttmjqlh48h5qsg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "755481004031-gdcegsaab8ca84tp1dbe6u344clu7kvu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.crudapp"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:755481004031:android:99ff01871e0f34f20549ca",
+        "android_client_info": {
+          "package_name": "com.example.flutterfirepushnotification"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "755481004031-rq576hkjk8akmthe8tttmjqlh48h5qsg.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBtRYAYY9eBCIN7V8nDiLTg44fSLhG0Gzg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "755481004031-rq576hkjk8akmthe8tttmjqlh48h5qsg.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "755481004031-gdcegsaab8ca84tp1dbe6u344clu7kvu.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.crudapp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
