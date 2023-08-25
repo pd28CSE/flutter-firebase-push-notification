@@ -2,14 +2,18 @@ import 'dart:developer';
 import 'dart:math' as math;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import './second_screen.dart';
+import './third_screen.dart';
 
 class FirebaseNotificationHandler {
   FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
 
-  Future<void> initialize() async {
+  Future<void> initialize(BuildContext context) async {
     NotificationSettings notificationSettings =
         await _firebaseMessaging.requestPermission(
       alert: true,
@@ -21,6 +25,8 @@ class FirebaseNotificationHandler {
       sound: true,
     );
 
+    //? This code will be executed when the app is opened through the
+    //? notification displayed in the notification tray while the app is closed.
     RemoteMessage? message =
         await FirebaseMessaging.instance.getInitialMessage();
     if (message != null) {
@@ -30,6 +36,19 @@ class FirebaseNotificationHandler {
         log('Message Notification: ${message.notification}');
         log('Notification Title: ${message.notification?.title ?? 'Empty title'}');
         log('Notification Body: ${message.notification?.body ?? 'Empty body'}');
+
+        Future.delayed(Duration.zero, () {
+          if (message.data['msg'] == 'test message') {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (cntxt) => ThirdScreen(
+                  info: message.data['msg'],
+                ),
+              ),
+            );
+          }
+        });
       }
     }
 
@@ -42,7 +61,7 @@ class FirebaseNotificationHandler {
         log('Message Notification: ${message.notification}');
         log('Notification Title: ${message.notification?.title ?? 'Empty title'}');
         log('Notification Body: ${message.notification?.body ?? 'Empty body'}');
-        initFlutterLocalNotificationsPlugin(message);
+        initFlutterLocalNotificationsPlugin(context, message);
         showLocalNotification(message);
       }
     });
@@ -65,7 +84,7 @@ class FirebaseNotificationHandler {
   }
 
   Future<void> initFlutterLocalNotificationsPlugin(
-      RemoteMessage message) async {
+      BuildContext context, RemoteMessage message) async {
     //? iniatialize the Flutter-Local-Notifications settings for android and iOS.
     AndroidInitializationSettings androidInitializationSettings =
         const AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -79,7 +98,21 @@ class FirebaseNotificationHandler {
 
     await _flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: (details) {},
+      onDidReceiveNotificationResponse: (NotificationResponse details) {
+        log('------------------');
+        log(details.id.toString());
+        log(message.data.toString());
+        if (message.data['msg'] == 'test message') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (cntxt) => SecondScreen(
+                info: message.data['msg'],
+              ),
+            ),
+          );
+        }
+      },
     );
   }
 
