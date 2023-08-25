@@ -1,16 +1,13 @@
-# flutterfirepushnotification
+# Flutter Firebase Push Notification
 
-A new Flutter project.
+## Three Types of Notification
+1.  Foreground 
+2.  Background
+3.  Kill or Terminate
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## Dependencies
+1.  [firebase_core: ^2.15.1](https://pub.dev/packages/firebase_core)
+2.  [firebase_messaging: ^14.6.7](https://pub.dev/packages/firebase_messaging)
+3.  [flutter_local_notifications: ^15.1.1](https://pub.dev/packages/flutter_local_notifications)
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
