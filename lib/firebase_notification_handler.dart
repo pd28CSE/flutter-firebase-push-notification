@@ -1,13 +1,17 @@
 import 'dart:developer';
+import 'dart:math' as math;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 class FirebaseNotificationHandler {
-  FirebaseMessaging firebaseMessaging = FirebaseMessaging.instance;
+  FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   Future<void> initialize() async {
     NotificationSettings notificationSettings =
-        await firebaseMessaging.requestPermission(
+        await _firebaseMessaging.requestPermission(
       alert: true,
       announcement: false,
       badge: true,
@@ -38,6 +42,8 @@ class FirebaseNotificationHandler {
         log('Message Notification: ${message.notification}');
         log('Notification Title: ${message.notification?.title ?? 'Empty title'}');
         log('Notification Body: ${message.notification?.body ?? 'Empty body'}');
+        initFlutterLocalNotificationsPlugin(message);
+        showLocalNotification(message);
       }
     });
 
@@ -58,25 +64,89 @@ class FirebaseNotificationHandler {
     FirebaseMessaging.onBackgroundMessage(firebaseMessingBackgroundHandler);
   }
 
+  Future<void> initFlutterLocalNotificationsPlugin(
+      RemoteMessage message) async {
+    //? iniatialize the Flutter-Local-Notifications settings for android and iOS.
+    AndroidInitializationSettings androidInitializationSettings =
+        const AndroidInitializationSettings('@mipmap/ic_launcher');
+    DarwinInitializationSettings iosInitializationSettings =
+        const DarwinInitializationSettings();
+
+    InitializationSettings initializationSettings = InitializationSettings(
+      android: androidInitializationSettings,
+      iOS: iosInitializationSettings,
+    );
+
+    await _flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (details) {},
+    );
+  }
+
+  Future<void> showLocalNotification(RemoteMessage message) async {
+    //? iniatialize Android Notification Channel for the Flutter-Local-Notifications.
+    AndroidNotificationChannel androidNotificationChannel =
+        AndroidNotificationChannel(
+      math.Random.secure().nextInt(10000).toString(),
+      'High Importance Notification',
+      importance: Importance.max,
+    );
+
+    AndroidNotificationDetails androidNotificationDetails =
+        AndroidNotificationDetails(
+      androidNotificationChannel.id,
+      androidNotificationChannel.name,
+      channelDescription: 'Channel description',
+      importance: Importance.high,
+      priority: Priority.high,
+      ticker: 'ticker',
+    );
+
+    DarwinNotificationDetails iosNotificationDetails =
+        const DarwinNotificationDetails(
+      presentAlert: true,
+      presentBadge: true,
+      presentSound: true,
+    );
+
+    NotificationDetails notificationDetails = NotificationDetails(
+      android: androidNotificationDetails,
+      iOS: iosNotificationDetails,
+    );
+
+    //? Show the Flutter-Local-Notifications.
+    Future.delayed(
+      Duration.zero,
+      () {
+        _flutterLocalNotificationsPlugin.show(
+          0,
+          message.notification?.title ?? 'Empty Title',
+          message.notification?.body ?? 'Empty Body',
+          notificationDetails,
+        );
+      },
+    );
+  }
+
   Future<String?> getToken() async {
-    return await firebaseMessaging.getToken();
+    return await _firebaseMessaging.getToken();
   }
 
   void onTokenRefresh() async {
     //? when token is refreshed.
-    firebaseMessaging.onTokenRefresh.listen((String token) {
+    _firebaseMessaging.onTokenRefresh.listen((String token) {
       log('Send refresh token to api : $token');
     });
   }
 
   Future<void> subscribeToTopic(String topicName) async {
     //?  to achieve Topic-Based-Notification, subscribe To Topic.
-    await firebaseMessaging.subscribeToTopic(topicName);
+    await _firebaseMessaging.subscribeToTopic(topicName);
   }
 
   Future<void> unsubscribeFromTopic(String topicName) async {
     //?  Unsubscribe From Topic.
-    await firebaseMessaging.unsubscribeFromTopic(topicName);
+    await _firebaseMessaging.unsubscribeFromTopic(topicName);
   }
 }
 

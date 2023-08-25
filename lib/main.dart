@@ -9,11 +9,13 @@ import './firebase_notification_handler.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await FirebaseNotificationHandler().initialize();
-  await FirebaseNotificationHandler().subscribeToTopic('TopicName');
-  String? ab = await FirebaseNotificationHandler().getToken();
+  FirebaseNotificationHandler firebaseNotificationHandler =
+      FirebaseNotificationHandler();
+  await firebaseNotificationHandler.initialize();
+  await firebaseNotificationHandler.subscribeToTopic('TopicName');
+  String? ab = await firebaseNotificationHandler.getToken();
   log(ab ?? '');
-  FirebaseNotificationHandler().onTokenRefresh();
+  firebaseNotificationHandler.onTokenRefresh();
 
   runApp(const MyApp());
 }
@@ -39,6 +41,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  FirebaseNotificationHandler firebaseNotificationHandler =
+      FirebaseNotificationHandler();
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      //  initNotification();
+    });
+  }
+
+  Future<void> initNotification() async {
+    await firebaseNotificationHandler.initialize();
+    await firebaseNotificationHandler.subscribeToTopic('TopicName');
+    firebaseNotificationHandler.getToken().then((value) {
+      log(value ?? '');
+    });
+
+    firebaseNotificationHandler.onTokenRefresh();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
