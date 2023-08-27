@@ -26,11 +26,11 @@ class FirebaseNotificationHandler {
     );
 
     //? This code will be executed when the app is opened through the
-    //? notification displayed in the notification tray while the app is closed.
+    //? notification displayed in the notification tray while the app is closed/killed.
     RemoteMessage? message =
         await FirebaseMessaging.instance.getInitialMessage();
     if (message != null) {
-      log('Got a message whilst in the foreground!---- (getInitialMessage) ----');
+      log('Got a message ---- (getInitialMessage) ----');
       log('Message Data: ${message.data}');
       if (message.notification != null) {
         log('Message Notification: ${message.notification}');
@@ -53,7 +53,8 @@ class FirebaseNotificationHandler {
     }
 
     //? when app is Foreground, that	means application is open,
-    //? in view and in use. At this time Notifications will not appear in the notification tray.
+    //? in view and in use this code is execute. At this time Notifications
+    //?  will not appear in the notification tray.
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       log('Got a message whilst in the foreground!---- (onMessage) ----');
       log('Message Data: ${message.data}');
@@ -66,8 +67,13 @@ class FirebaseNotificationHandler {
       }
     });
 
-    //? This code is executed when the notification is already present in the
-    //? notification tray and the app is opened with the notification On Tap.
+    //? When the app is in the background, meaning the app is not visible. This
+    //? code will be executed when notifications appear in the notification tray.
+    FirebaseMessaging.onBackgroundMessage(firebaseMessingBackgroundHandler);
+
+    //? This code is executed when the notification is appear in the
+    //? notification tray when the app is in Background and the app is
+    //? opened with the notification On Tap.
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       log('This App is opened by the Notification Tap ---- (onMessageOpenedApp) ----');
       log('Message Data: ${message.data}');
@@ -77,10 +83,6 @@ class FirebaseNotificationHandler {
         log('Notification Body: ${message.notification?.body ?? 'Empty body'}');
       }
     });
-
-    //? When the app is in the background, meaning the app is not visible. This
-    //? code will be executed when notifications appear in the notification tray.
-    FirebaseMessaging.onBackgroundMessage(firebaseMessingBackgroundHandler);
   }
 
   Future<void> initFlutterLocalNotificationsPlugin(

@@ -1,8 +1,10 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:http/http.dart';
 
 import './firebase_notification_handler.dart';
 
@@ -43,6 +45,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   FirebaseNotificationHandler firebaseNotificationHandler =
       FirebaseNotificationHandler();
+
   @override
   void initState() {
     super.initState();
@@ -67,8 +70,32 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: const Text('Flutter Firebase Push Notification'),
       ),
-      body: const Center(
-        child: Text('Flutter Firebase Push Notification'),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            firebaseNotificationHandler.getToken().then((String? value) async {
+              Map<String, dynamic> requestBody = {
+                'to': '$value',
+                'priority': 'high',
+                'notification': {
+                  'title': 'This is Title',
+                  'body': 'This is Body',
+                },
+                'data': {'type': 'msg'},
+              };
+              await post(
+                Uri.parse('https://fcm.googleapis.com/fcm/send'),
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization':
+                      'key=AAAAr-YtR_8:APA91bFluLRwajp5TKC4ZpNNnjX36hdW8g3Fg_gS31R8__i2XZmiuT4glUcI3PiD-8UPSumBVxrrcvT4uHYl3_49O3VCnxbnRmJubXk0h93nrvKMFcVwHhxEPoCocHHUqFJ_u1ISqxN-',
+                },
+                body: jsonEncode(requestBody),
+              );
+            });
+          },
+          child: const Text('Flutter Firebase Push Notification'),
+        ),
       ),
     );
   }
